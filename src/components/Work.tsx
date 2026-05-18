@@ -1,42 +1,58 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./styles/Work.css";
 import WorkImage from "./WorkImage";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 
 const projects = [
   {
-    title: "CallHQ",
-    category: "Voice AI Calling Platform",
-    tools: "Voice AI, Calling Automation, CRM Integrations",
-    image: "/images/callhq.png",
-    link: "https://callhq.ai",
+    title: "Kavish Parmar Portfolio",
+    category: "Personal Portfolio Website",
+    tools: "React, GSAP, Three.js, Vite, TypeScript",
+    image: "/images/placeholder.png",
+    link: "https://kavishparmar.vercel.app/",
   },
   {
-    title: "Whatsapp Automation",
-    category: "WABA Application",
-    tools: "WhatsApp Business API, Workflow Automation, Notifications",
-    image: "/images/whatsapp.png",
-    link: "https://whatsapp.callhq.ai",
+    title: "Green Valley Coaching",
+    category: "Education Institute Website",
+    tools: "React, Responsive Design, SEO, Vite",
+    image: "/images/placeholder.png",
+    link: "https://greenvalleycoachinginstitute.vercel.app/",
   },
   {
-    title: "Broki",
-    category: "Real Estate Platform for FnB Industry",
-    tools: "Property Discovery, Lead Management, Marketplace Workflows",
-    image: "/images/broki.png",
-    link: "https://broki.in",
+    title: "Yoga with Harshwardhan",
+    category: "Yoga & Wellness Landing Page",
+    tools: "HTML, CSS, JavaScript, Google Forms Integration",
+    image: "/images/placeholder.png",
+    link: "https://kavishparmar.github.io/yogawithharshwardhan/",
   },
   {
-    title: "Orrdr.com",
-    category: "Ecommerce Platform and Mobile App",
-    tools: "Ecommerce, Mobile Experience, Order Management",
-    image: "/images/orrdr.png",
-    link: "https://orrdr.com",
+    title: "Kiran Copper House",
+    category: "Mobile Shop — Rajgarh, Dhar",
+    tools: "React, Vite, SEO, Structured Data",
+    image: "/images/placeholder.png",
+    link: "https://kirancopperhouse.vercel.app/",
+  },
+  {
+    title: "Kiran Copper House v2",
+    category: "Mobile Shop — Redesigned Version",
+    tools: "React, Vite, UX Revamp, Google Analytics",
+    image: "/images/placeholder.png",
+    link: "https://kirancopperhouse2.vercel.app/",
+  },
+  {
+    title: "Shubham Showroom",
+    category: "Business Showroom Website",
+    tools: "React, Vite, Responsive UI",
+    image: "/images/placeholder.png",
+    link: "https://shubhamshowroom.vercel.app/",
   },
 ];
 
 const Work = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const [isPaused, setIsPaused] = useState(false);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -60,6 +76,15 @@ const Work = () => {
     goToSlide(newIndex);
   }, [currentIndex, goToSlide]);
 
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      goToNext();
+    }, 6000); // Scroll every 6 seconds
+
+    return () => clearInterval(interval);
+  }, [goToNext, isPaused]);
+
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
@@ -67,7 +92,11 @@ const Work = () => {
           My <span>Work</span>
         </h2>
 
-        <div className="carousel-wrapper">
+        <div 
+          className="carousel-wrapper"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           {/* Navigation Arrows */}
           <button
             className="carousel-arrow carousel-arrow-left"
