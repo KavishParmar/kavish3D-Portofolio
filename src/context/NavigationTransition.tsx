@@ -13,8 +13,13 @@ import "../components/styles/NavigationTransition.css";
 import { getSmoother } from "../components/utils/scrollSmoother";
 import { resetHomeMotionState } from "../components/utils/homeMotionReset";
 
+interface ClickCoords {
+  clientX: number;
+  clientY: number;
+}
+
 interface NavigationTransitionType {
-  startTransition: (target: string, label: string) => void;
+  startTransition: (target: string, label: string, coords?: ClickCoords | React.MouseEvent) => void;
 }
 
 const NavigationTransitionContext =
@@ -22,7 +27,7 @@ const NavigationTransitionContext =
 
 const DEFAULT_DELAY = 650;
 const EXIT_DELAY = 1200;
-const CURL_DURATION = 950; // slightly longer than the 0.9s CSS animation
+const CURTAIN_DURATION = 950;
 
 export const NavigationTransitionProvider = ({
   children,
@@ -31,7 +36,6 @@ export const NavigationTransitionProvider = ({
   const location = useLocation();
   const [visible, setVisible] = useState(false);
   const [exiting, setExiting] = useState(false);
-  const [label, setLabel] = useState("HOME");
   const timers = useRef<number[]>([]);
 
   const clearTimers = useCallback(() => {
@@ -40,7 +44,8 @@ export const NavigationTransitionProvider = ({
   }, []);
 
   const startTransition = useCallback(
-    (target: string, nextLabel: string) => {
+    // coords param kept for API compatibility but not used by the curtain effect
+    (target: string, _label: string, _coords?: ClickCoords | React.MouseEvent) => {
       const [pathname, hash = ""] = target.split("#");
       const nextPath = pathname || "/";
       const nextHash = hash ? `#${hash}` : "";
@@ -55,7 +60,6 @@ export const NavigationTransitionProvider = ({
 
       clearTimers();
       setExiting(false);
-      setLabel(nextLabel);
       setVisible(true);
 
       timers.current.push(
@@ -87,7 +91,7 @@ export const NavigationTransitionProvider = ({
           timers.current.push(
             window.setTimeout(() => {
               setExiting(false);
-            }, CURL_DURATION)
+            }, CURTAIN_DURATION)
           );
         }, EXIT_DELAY)
       );
@@ -107,6 +111,13 @@ export const NavigationTransitionProvider = ({
   return (
     <NavigationTransitionContext.Provider value={value}>
       {children}
+      {/*
+        SVG curtain — 120vh tall so the curved bottom overhangs 20vh.
+        - below:  translateY(120%)  → entirely below viewport
+        - active: translateY(0%)    → covers full screen (curve is below the fold)
+        - exit:   translateY(-120%) → sweeps upward; curved edge crosses the viewport
+                                      creating the wave-peel reveal (matches screenshot)
+      */}
       <div
         className={`page-transition${
           visible
@@ -116,7 +127,19 @@ export const NavigationTransitionProvider = ({
             : " page-transition-below"
         }`}
       >
-        <strong className="page-transition-label">{label}</strong>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 120"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {/*
+            Path covers the full viewBox width and 100/120 of height (= 100vh),
+            then a quadratic bezier dips down to y=120 (= 120vh) at the center.
+            This curved hem is what sweeps visibly across the screen on exit.
+          */}
+          <path d="M0 0 L100 0 L100 100 Q50 120 0 100 Z" fill="#111111" />
+        </svg>
       </div>
     </NavigationTransitionContext.Provider>
   );

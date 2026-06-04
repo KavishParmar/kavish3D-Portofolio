@@ -1,0 +1,206 @@
+/* ═══════════════════════════════════════════════════════
+   LIGHT THEME — applied via .page-light on PageLayout root
+   Used by: About page, Work page
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Page wrapper ── */
+.page-light {
+  background-color: #ffffff;
+}
+
+/* ── Inner page main ── */
+.page-light .inner-page-main {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+/* ── Navbar — top bar ── */
+.page-light .top-navbar-logo {
+  color: #111111;
+}
+.page-light .logo-hover {
+  color: var(--accentColor);
+}
+.page-light .top-nav-link {
+  color: #111111;
+}
+.page-light .top-nav-link .nav-blob {
+  background: rgba(17, 17, 17, 0.07);
+}
+.page-light .top-nav-link .top-active-dot {
+  background: var(--accentColor);
+}
+
+/* ── Navbar — hamburger ── */
+.page-light .btn-hamburger {
+  background: rgba(240, 240, 240, 0.92);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+.page-light .btn-hamburger:hover {
+  background: rgba(220, 220, 220, 0.98);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+.page-light .btn-hamburger .bar {
+  background: #111111;
+}
+
+/* ── Hero shared ── */
+.page-light .ip-hero {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-title {
+  color: #111111;
+}
+.page-light .ip-subtitle {
+  color: #555555;
+}
+.page-light .ip-rule {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* ── About page text ── */
+.page-light .ip-about-col p {
+  color: #555555;
+}
+.page-light .ip-stat {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-stat-num {
+  color: #111111;
+}
+.page-light .ip-stat-label {
+  color: #888888;
+}
+
+/* ── Pillars grid ── */
+.page-light .ip-pillar-grid {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-pillar {
+  background: rgba(0, 0, 0, 0.01);
+}
+.page-light .ip-pillar::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-pillar:hover {
+  background: rgba(94, 234, 212, 0.08);
+}
+.page-light .ip-pillar h3 {
+  color: #111111;
+}
+.page-light .ip-pillar p {
+  color: #555555;
+}
+
+/* ── Work project cards ── */
+.page-light .ip-project-card {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-project-card:first-child {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-card-index {
+  color: #bbbbbb;
+}
+.page-light .ip-card-image {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ip-card-title {
+  color: #111111;
+}
+.page-light .ip-card-summary {
+  color: #555555;
+}
+.page-light .ip-card-tools {
+  color: #888888;
+}
+.page-light .ip-card-link {
+  color: #111111;
+  border-color: rgba(94, 234, 212, 0.4);
+}
+.page-light .ip-card-link:hover {
+  background: rgba(94, 234, 212, 0.12);
+  border-color: var(--accentColor);
+  color: #111111;
+}
+
+/* ── About page specific ── */
+.page-light .ap-greet-word {
+  color: #888888;
+}
+.page-light .ap-hero {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-hero-title {
+  color: #111111;
+}
+.page-light .ap-hero-body {
+  color: #555555;
+}
+.page-light .ap-bio {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-bio-text p {
+  color: #555555;
+}
+.page-light .ap-bio-image {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-bio-image-placeholder {
+  color: #bbbbbb;
+}
+
+/* ── Services list ── */
+.page-light .ap-services {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-service-item {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-service-item:last-child {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-service-num {
+  color: #cccccc;
+}
+.page-light .ap-service-item:hover .ap-service-num {
+  color: #555555;
+}
+.page-light .ap-service-body h3 {
+  color: #111111;
+}
+.page-light .ap-service-body p {
+  color: #555555;
+}
+
+/* ── Approach grid ── */
+.page-light .ap-approach-grid {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-approach-item {
+  background: rgba(0, 0, 0, 0.01);
+}
+.page-light .ap-approach-item::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+.page-light .ap-approach-item:hover {
+  background: rgba(94, 234, 212, 0.08);
+}
+.page-light .ap-approach-item h3 {
+  color: #111111;
+}
+.page-light .ap-approach-item p {
+  color: #555555;
+}
+
+/* ── Responsive border fixes ── */
+@media only screen and (max-width: 1024px) {
+  .page-light .ip-pillar {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+  .page-light .ap-approach-item {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+}

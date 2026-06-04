@@ -2,12 +2,13 @@ import PageLayout from "../components/PageLayout";
 import WorkImage from "../components/WorkImage";
 import { projects } from "../data/projects";
 import { MdArrowOutward } from "react-icons/md";
+import MagneticButton from "../components/MagneticButton";
 import "../components/styles/Work.css";
 import "../components/styles/InnerPage.css";
 
 const WorkPage = () => {
   return (
-    <PageLayout pageKey="work">
+    <PageLayout pageKey="work" lightBg>
       <main className="inner-page-main">
 
         {/* ── Hero ── */}
@@ -34,14 +35,16 @@ const WorkPage = () => {
                 <h2 className="ip-card-title">{project.title}</h2>
                 <p className="ip-card-summary">{project.summary}</p>
                 <p className="ip-card-tools">{project.tools}</p>
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ip-card-link"
-                >
-                  View Live <MdArrowOutward />
-                </a>
+                <MagneticButton>
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ip-card-link"
+                  >
+                    View Live <MdArrowOutward />
+                  </a>
+                </MagneticButton>
               </div>
             </article>
           ))}

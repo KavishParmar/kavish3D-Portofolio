@@ -28,41 +28,49 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 500;
   letter-spacing: 0.03em;
   color: #eae5ec;
-  height: 1.5em;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  overflow: visible;
 }
 
-.logo-default,
-.logo-hover {
-  display: block;
+.logo-symbol {
+  flex-shrink: 0;
+}
+
+.logo-texts {
+  position: relative;
+  display: inline-block;
+}
+
+/* "Code by Kavish" — collapses right→left into © on hover */
+.logo-codeby {
+  display: inline-block;
   white-space: nowrap;
-  transition: transform 0.38s cubic-bezier(0.7, 0, 0.2, 1), opacity 0.3s ease;
+  clip-path: inset(0 0% 0 0);
+  transition: clip-path 0.75s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.logo-codeby.out {
+  clip-path: inset(0 100% 0 0);
 }
 
-.logo-default {
-  transform: translateY(0);
-  opacity: 1;
-}
-.logo-default.out {
-  transform: translateY(-115%);
-  opacity: 0;
-}
-
-.logo-hover {
+/* "Kavish Parmar" — reveals left→right on hover */
+.logo-kavish {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateY(115%);
-  opacity: 0;
+  display: inline-block;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.75s 0.08s cubic-bezier(0.7, 0, 0.2, 1);
   color: var(--accentColor);
 }
-.logo-hover.in {
-  transform: translateY(0);
-  opacity: 1;
+.logo-kavish.in {
+  clip-path: inset(0 0% 0 0);
 }
 
 /* Nav links — right */
@@ -76,7 +84,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: #eae5ec;
@@ -90,24 +98,26 @@
   will-change: transform;
 }
 
-/* dot below top-nav links */
-.top-nav-link .nav-dot {
-  display: block;
+
+/* active dot under top-nav links */
+.top-nav-link .top-active-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  translate: -50% 0;
   width: 4px;
   height: 4px;
   border-radius: 50%;
   background: #eae5ec;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) scale(0);
   opacity: 0;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  scale: 0;
+  transition: opacity 0.25s ease, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.top-nav-link:hover .nav-dot {
-  transform: translateX(-50%) scale(1);
+.top-nav-link.active .top-active-dot,
+.top-nav-link:hover .top-active-dot {
   opacity: 1;
+  scale: 1;
 }
 
 /* ── Hamburger button (shows after scroll) ── */
@@ -119,8 +129,7 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: rgba(14, 14, 14, 0.82);
-  backdrop-filter: blur(10px);
+  background: rgba(14, 14, 14, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.09);
   display: flex;
   flex-direction: column;
@@ -131,7 +140,9 @@
   opacity: 0;
   pointer-events: none;
   transform: translateY(-8px);
-  transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease, border-color 0.3s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease,
+    border-color 0.3s ease, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
 }
 
 .btn-hamburger.visible {
@@ -141,8 +152,15 @@
 }
 
 .btn-hamburger:hover {
-  background: rgba(30, 30, 30, 0.95);
-  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(30, 30, 30, 0.98);
+  border-color: var(--accentColor);
+  scale: 1.1;
+  box-shadow: 0 0 18px rgba(94, 234, 212, 0.2);
+}
+
+.btn-hamburger.menu-open:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.1);
 }
 
 .btn-hamburger .bar {
@@ -274,7 +292,8 @@
     margin-right 0.28s ease;
 }
 
-.nav-link:hover .side-dot {
+.nav-link:hover .side-dot,
+.nav-link.active .side-dot {
   transform: scale(1) translateX(0);
   opacity: 1;
   margin-right: 14px;

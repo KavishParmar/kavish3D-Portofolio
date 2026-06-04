@@ -5,12 +5,16 @@ import WorkImage from "./WorkImage";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { projects } from "../data/projects";
 import { useNavigationTransition } from "../context/NavigationTransition";
+import { useMagneticHover } from "./utils/useMagneticHover";
+import MagneticButton from "./MagneticButton";
 
 const Work = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const { startTransition } = useNavigationTransition();
+  const leftArrowRef = useMagneticHover<HTMLButtonElement>(0.45);
+  const rightArrowRef = useMagneticHover<HTMLButtonElement>(0.45);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -48,20 +52,11 @@ const Work = () => {
     <div className="work-section" id="work">
       <div className="work-container section-container">
         <div className="work-heading-row">
+          <div className="work-heading-line" />
           <h2>
             My <span>Work</span>
           </h2>
-          <Link
-            to="/work"
-            className="work-more-btn"
-            onClick={(event) => {
-              event.preventDefault();
-              startTransition("/work", "WORK");
-            }}
-            data-cursor="disable"
-          >
-            More Work <span>+</span>
-          </Link>
+          <div className="work-heading-line" />
         </div>
 
         <div
@@ -70,6 +65,7 @@ const Work = () => {
           onMouseLeave={() => setIsPaused(false)}
         >
           <button
+            ref={leftArrowRef}
             className="carousel-arrow carousel-arrow-left"
             onClick={goToPrev}
             aria-label="Previous project"
@@ -78,6 +74,7 @@ const Work = () => {
             <MdArrowBack />
           </button>
           <button
+            ref={rightArrowRef}
             className="carousel-arrow carousel-arrow-right"
             onClick={goToNext}
             aria-label="Next project"
@@ -135,6 +132,22 @@ const Work = () => {
               />
             ))}
           </div>
+        </div>
+
+        <div className="work-more-row">
+          <MagneticButton>
+            <Link
+              to="/work"
+              className="work-more-btn"
+              onClick={(event) => {
+                event.preventDefault();
+                startTransition("/work", "WORK", event);
+              }}
+              data-cursor="disable"
+            >
+              <span>More Work</span>
+            </Link>
+          </MagneticButton>
         </div>
       </div>
     </div>

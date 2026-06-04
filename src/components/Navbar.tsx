@@ -50,13 +50,13 @@ function useMagnetic(strength = 0.35) {
   return ref;
 }
 
-// Top-bar nav link with dot indicator + magnetic
-function TopNavBtn({ label, onClick }: { label: string; onClick: () => void }) {
+// Top-bar nav link with blob fill + magnetic
+function TopNavBtn({ label, onClick, isActive }: { label: string; onClick: (e: React.MouseEvent) => void; isActive?: boolean }) {
   const ref = useMagnetic(0.3);
   return (
-    <button ref={ref} type="button" className="top-nav-link" onClick={onClick}>
+    <button ref={ref} type="button" className={`top-nav-link${isActive ? " active" : ""}`} onClick={onClick}>
       {label}
-      <span className="nav-dot" />
+      <span className="top-active-dot" aria-hidden="true" />
     </button>
   );
 }
@@ -66,14 +66,16 @@ function SideNavBtn({
   label,
   onClick,
   style,
+  isActive,
 }: {
   label: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   style?: React.CSSProperties;
+  isActive?: boolean;
 }) {
   const ref = useMagnetic(0.18);
   return (
-    <button ref={ref} type="button" className="nav-link" style={style} onClick={onClick}>
+    <button ref={ref} type="button" className={`nav-link${isActive ? " active" : ""}`} style={style} onClick={onClick}>
       <span className="side-dot" />
       {label}
     </button>
@@ -85,7 +87,7 @@ const Navbar = () => {
   const { startTransition } = useNavigationTransition();
   const { isLoading } = useLoading();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(location.pathname !== "/");
+  const [scrolled, setScrolled] = useState(window.scrollY > 80);
   const [logoHovered, setLogoHovered] = useState(false);
 
   const isHomePage = useMemo(() => location.pathname === "/", [location.pathname]);
@@ -140,11 +142,6 @@ const Navbar = () => {
   }, [isHomePage, isLoading]);
 
   useEffect(() => {
-    if (!isHomePage) {
-      setScrolled(true);
-      return;
-    }
-
     const handleScroll = () => {
       const past = window.scrollY > 80;
       setScrolled(past);
@@ -160,30 +157,31 @@ const Navbar = () => {
     if (isHomePage) {
       getSmoother()?.paused(isMenuOpen);
     } else {
-      document.body.style.overflow = isMenuOpen ? "hidden" : "";
+      document.body.style.overflowY = isMenuOpen ? "hidden" : "auto";
     }
     return () => {
-      if (!isHomePage) document.body.style.overflow = "";
+      if (!isHomePage) document.body.style.overflowY = "auto";
     };
   }, [isMenuOpen, isHomePage]);
 
   const closeMenu = () => setIsMenuOpen(false);
 
-  const goHome = () => {
+  const goHome = (e?: React.MouseEvent) => {
     closeMenu();
     if (location.pathname === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      startTransition("/", "HOME");
+      startTransition("/", "HOME", e);
     }
   };
 
-  const handleNav = (page: string) => {
+  const handleNav = (page: string, e: React.MouseEvent) => {
     closeMenu();
+    const coords = { clientX: e.clientX, clientY: e.clientY };
     setTimeout(() => {
-      if (page === "Work") startTransition("/work", "WORK");
-      else if (page === "About") startTransition("/about", "ABOUT");
-      else if (page === "Contact") startTransition("/contact", "CONTACT");
+      if (page === "Work") startTransition("/work", "WORK", coords);
+      else if (page === "About") startTransition("/about", "ABOUT", coords);
+      else if (page === "Contact") startTransition("/contact", "CONTACT", coords);
     }, 300);
   };
 
@@ -198,14 +196,17 @@ const Navbar = () => {
           onMouseEnter={() => setLogoHovered(true)}
           onMouseLeave={() => setLogoHovered(false)}
         >
-          <span className={`logo-default${logoHovered ? " out" : ""}`}>© Code by Kavish</span>
-          <span className={`logo-hover${logoHovered ? " in" : ""}`}>Kavish Parmar</span>
+          <span className="logo-symbol">©</span>
+          <span className="logo-texts">
+            <span className={`logo-codeby${logoHovered ? " out" : ""}`}>&nbsp;Code by Kavish</span>
+            <span className={`logo-kavish${logoHovered ? " in" : ""}`}>&nbsp;Kavish Parmar</span>
+          </span>
         </button>
 
         <nav className="top-navbar-links">
-          <TopNavBtn label="Work" onClick={() => handleNav("Work")} />
-          <TopNavBtn label="About" onClick={() => handleNav("About")} />
-          <TopNavBtn label="Contact" onClick={() => handleNav("Contact")} />
+          <TopNavBtn label="Work" onClick={(e) => handleNav("Work", e)} isActive={location.pathname === "/work"} />
+          <TopNavBtn label="About" onClick={(e) => handleNav("About", e)} isActive={location.pathname === "/about"} />
+          <TopNavBtn label="Contact" onClick={(e) => handleNav("Contact", e)} isActive={location.pathname === "/contact"} />
         </nav>
       </header>
 
@@ -233,14 +234,18 @@ const Navbar = () => {
       <nav className={`side-nav${isMenuOpen ? " active" : ""}`} aria-hidden={!isMenuOpen}>
         <div className="nav-section">
           <h5 className="nav-heading">Navigation</h5>
-          {["Home", "Work", "About", "Contact"].map((item, i) => (
+          {["Home", "Work", "About", "Contact"].map((item, i) => {
+            const itemPath = item === "Home" ? "/" : `/${item.toLowerCase()}`;
+            return (
             <SideNavBtn
               key={item}
               label={item}
               style={{ transitionDelay: isMenuOpen ? `${0.05 + i * 0.06}s` : "0s" }}
-              onClick={() => (item === "Home" ? goHome() : handleNav(item))}
+              onClick={(e) => (item === "Home" ? goHome(e) : handleNav(item, e))}
+              isActive={location.pathname === itemPath}
             />
-          ))}
+            );
+          })}
         </div>
 
         <div className="nav-section nav-socials">
@@ -260,9 +265,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div className="landing-circle1"></div>
-      <div className="landing-circle2"></div>
-      <div className="nav-fade"></div>
     </>
   );
 };

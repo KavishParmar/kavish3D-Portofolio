@@ -3,8 +3,9 @@
   max-width: var(--cMaxWidth);
   margin: auto;
   position: relative;
-  height: var(--vh);
+  height: 115svh;
   background-color: rgba(153, 157, 158, 1);
+  overflow: hidden;
 }
 
 .landing-container {
@@ -13,67 +14,15 @@
   height: 100%;
   position: relative;
   max-width: var(--cMaxWidth);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 5%;
+  padding-top: 10%;
+  box-sizing: border-box;
 }
 
-.landing-circle1 {
-  top: 0%;
-  left: 0%;
-  z-index: 15;
-  position: fixed;
-  width: 300px;
-  height: 300px;
-  background-color: #22d3ee;
-  box-shadow: inset -50px 40px 50px rgba(0, 180, 180, 0.6);
-  filter: blur(60px);
-  border-radius: 50%;
-  animation: loadingCircle 5s linear infinite;
-}
 
-.nav-fade {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 130px;
-  background-image: linear-gradient(0deg,
-      transparent,
-      var(--backgroundColor) 70%);
-  pointer-events: none;
-  z-index: 12;
-  opacity: 0;
-  left: 0;
-}
-
-@keyframes loadingCircle {
-  0% {
-    transform: translate(-95%, -75%) rotateZ(0deg);
-  }
-
-  100% {
-    transform: translate(-95%, -75%) rotateZ(360deg);
-  }
-}
-
-.landing-circle2 {
-  top: 50%;
-  right: 0%;
-  transform: translate(calc(100% - 2px), -50%);
-  z-index: 9;
-  position: fixed;
-  display: none;
-  width: 300px;
-  height: 300px;
-  background-color: #22d3ee;
-  box-shadow: inset -50px 40px 50px rgba(0, 180, 180, 0.6);
-  filter: blur(50px);
-  border-radius: 50%;
-  animation: loadingCircle2 5s linear infinite;
-}
-
-@keyframes loadingCircle2 {
-  100% {
-    transform: translate(calc(100% - 2px), -50%) rotate(360deg);
-  }
-}
 
 .landing-video,
 .landing-image {
@@ -123,7 +72,7 @@
   height: 250px;
   background-image: linear-gradient(to bottom,
       transparent,
-      var(--backgroundColor) 70%);
+      rgba(153, 157, 158, 1) 70%);
   bottom: -50px;
   left: 50%;
   transform: translateX(-50%);
@@ -135,7 +84,7 @@
   content: "";
   width: 100vw;
   height: 700px;
-  background-color: var(--backgroundColor);
+  background-color: rgba(153, 157, 158, 1);
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -167,41 +116,9 @@
   border-radius: 50%;
 }
 
-.landing-intro {
-  position: absolute;
-  z-index: 9;
-  top: 12%;
-  left: 0;
-}
-
-.landing-intro h2 {
-  margin: 0;
-  color: var(--accentColor);
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 2px;
-}
-
-.landing-intro h1 {
-  margin: 0;
-  letter-spacing: 2px;
-  font-size: 28px;
-  line-height: 28px;
-  font-weight: 500;
-  font-family: "Geist", sans-serif;
-}
-
-/* .landing-intro h1 span {
-   font-weight: 200; 
-} */
-
 .landing-info {
-  position: absolute;
-  right: 50%;
-  transform: translateX(50%);
-  bottom: 40px;
-  top: inherit;
   z-index: 9;
+  text-align: left;
 }
 
 .landing-info h3 {
@@ -212,19 +129,24 @@
   margin: 0;
 }
 
+.landing-arrow {
+  font-size: 51px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 52px;
+  line-height: 1;
+}
+
 .landing-info h2 {
   margin: 0;
-  margin-top: -20px;
-  margin-left: 20px;
-  font-family: "Geist", sans-serif;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 40px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
   position: relative;
   display: flex;
-  flex-wrap: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  flex-direction: column;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.02em;
 }
 
 .landing-h2-info-1 {
@@ -237,7 +159,7 @@ h2.landing-info-h2 {
   font-size: 42px;
   width: 120%;
   margin: 0;
-  font-family: "Geist", sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 600;
   position: relative;
   margin-left: -5px;
@@ -262,34 +184,13 @@ h2.landing-info-h2 {
 }
 
 @media screen and (min-width: 500px) {
-  .landing-circle2 {
-    display: block;
-  }
-
   .character-model {
     z-index: 0;
   }
 
-  .landing-info h3 {
-    font-size: 18px;
-  }
-
-  .landing-intro h2 {
-    font-size: 18px;
-  }
-
-  .landing-intro h1 {
-    font-size: 30px;
-    line-height: 30px;
-  }
-
   .landing-info h2 {
-    font-size: 35px;
-    line-height: 40px;
-  }
-
-  h2.landing-info-h2 {
-    font-size: 38px;
+    font-size: 28px;
+    line-height: 34px;
   }
 }
 
@@ -298,26 +199,9 @@ h2.landing-info-h2 {
     height: 80vh;
   }
 
-  .landing-intro h2 {
-    font-size: 25px;
-  }
-
-  .landing-intro h1 {
-    font-size: 40px;
-    line-height: 35px;
-  }
-
-  .landing-info h3 {
-    font-size: 25px;
-  }
-
   .landing-info h2 {
-    font-size: 45px;
-    line-height: 42px;
-  }
-
-  h2.landing-info-h2 {
-    font-size: 55px;
+    font-size: 38px;
+    line-height: 38px;
   }
 }
 
@@ -325,7 +209,7 @@ h2.landing-info-h2 {
   .character-model {
     height: 100vh;
     bottom: 0;
-    z-index: 11;
+    z-index: 60;
     position: fixed;
     left: 0;
     right: 0;
@@ -337,63 +221,148 @@ h2.landing-info-h2 {
     display: none;
   }
 
-  .landing-intro {
-    top: 50%;
-    left: auto;
-    right: 66%;
-    transform: translate(0%, -50%);
-  }
-
-  .landing-info {
-    bottom: auto;
-    top: 51%;
-    z-index: inherit;
-    text-align: left;
-    transform: translate(0%, -50%);
-    right: auto;
-    left: 66%;
-  }
 }
 
 @media screen and (min-width: 1200px) {
-  .landing-intro {
-    top: 50%;
-    left: auto;
-    right: 70%;
-    transform: translate(0%, -50%);
-  }
-
-  .landing-info {
-    bottom: auto;
-    top: 51%;
-    z-index: inherit;
-    text-align: left;
-    transform: translate(0%, -50%);
-    right: auto;
-    left: 70%;
-  }
 }
 
 @media screen and (min-width: 1600px) {
-  .landing-intro h2 {
-    font-size: 35px;
-  }
-
-  .landing-intro h1 {
-    font-size: 60px;
-    line-height: 55px;
-  }
-
-  .landing-info h3 {
-    font-size: 35px;
-  }
-
   .landing-info h2 {
-    font-size: 65px;
-    line-height: 62px;
+    font-size: 50px;
+    line-height: 50px;
+  }
+}
+
+/* ── Location Card ── */
+.location-card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-75%);
+  left: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #0c0c0c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: none;
+  border-radius: 0 80px 80px 0;
+  padding: 22px 22px 22px 32px;
+  pointer-events: none;
+  min-width: 240px;
+}
+
+.location-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  gap: 1px;
+  padding-left: 30px;
+}
+
+.location-text span {
+  font-size: 19px;
+  color: #eae5ec;
+  font-weight: 500;
+  font-family: "DM Sans", sans-serif;
+  letter-spacing: 0.2px;
+  display: block;
+}
+
+.location-globe {
+  width: 68px;
+  height: 68px;
+  background: rgba(153, 157, 158, 1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+}
+
+@media only screen and (max-width: 500px) {
+  .location-card {
+    padding: 16px 16px 16px 24px;
+    min-width: 200px;
   }
 
-  h2.landing-info-h2 {
-    font-size: 75px;
+  .location-text span {
+    font-size: 14px;
   }
+
+  .location-globe {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* ── Digital Ball Globe ── */
+.digital-ball {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.digital-ball .overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, 0.08), transparent 65%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.digital-ball .globe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  perspective: 200px;
+}
+
+.digital-ball .globe-wrap {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: globe-spin 7s linear infinite;
+}
+
+/* Three meridian rings at 0°, 60°, 120° */
+.digital-ball .circle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transform-style: preserve-3d;
+}
+
+.digital-ball .circle:nth-child(1) { transform: rotateY(0deg); }
+.digital-ball .circle:nth-child(2) { transform: rotateY(60deg); }
+.digital-ball .circle:nth-child(3) { transform: rotateY(120deg); }
+
+/* Latitude rings */
+.digital-ball .circle-hor {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  transform: rotateX(70deg);
+}
+
+.digital-ball .circle-hor-middle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  transform: rotateX(90deg);
+}
+
+@keyframes globe-spin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
 }

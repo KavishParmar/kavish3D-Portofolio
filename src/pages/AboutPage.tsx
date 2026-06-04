@@ -1,79 +1,130 @@
+import { useEffect, useState } from "react";
 import PageLayout from "../components/PageLayout";
-import "../components/styles/About.css";
 import "../components/styles/InnerPage.css";
+import "../components/styles/AboutPage.css";
+
+const GREETINGS = [
+  "Hello", "Bonjour", "Namaste", "Ciao", "Hola",
+  "こんにちは", "Hallo", "Olá", "Hallå", "Guten Tag",
+];
 
 const AboutPage = () => {
+  const [greetIdx, setGreetIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setGreetIdx((i) => (i + 1) % GREETINGS.length),
+      1800
+    );
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <PageLayout pageKey="about">
+    <PageLayout pageKey="about" lightBg>
       <main className="inner-page-main">
 
-        {/* ── Hero ── */}
-        <section className="ip-hero section-container">
-          <p className="ip-kicker pe-kicker">Who I am</p>
-          <h1 className="ip-title pe-title">
-            Designer,<br />
-            Developer,<br />
-            <span>Problem solver.</span>
+        {/* ── Rotating greeting ── */}
+        <div className="ap-greetings section-container">
+          <span key={greetIdx} className="ap-greet-word">
+            {GREETINGS[greetIdx]}
+          </span>
+        </div>
+
+        {/* ── Hero statement ── */}
+        <section className="ap-hero section-container">
+          <h1 className="ap-hero-title">
+            Helping brands thrive<br />in the digital world.
           </h1>
-          <p className="ip-subtitle pe-body">
-            I help brands stand out in the digital era — with sharp design, clean code, and ideas that move.
+          <p className="ap-hero-body">
+            I help companies from all over the world with tailor-made solutions.
+            With each project, I push my work to new horizons, always putting
+            quality first.
           </p>
         </section>
 
-        {/* ── Divider ── */}
-        <div className="ip-rule section-container pe-body" />
-
-        {/* ── About text ── */}
-        <section className="ip-about-text section-container pe-body">
-          <div className="ip-about-col">
+        {/* ── Bio + image ── */}
+        <section className="ap-bio section-container">
+          <div className="ap-bio-text">
             <p>
-              The combination of my passion for design, code &amp; interaction positions me in a
-              unique place in the web design world. I build experiences that feel alive.
+              The combination of my passion for design, code &amp; interaction
+              positions me in a unique place in the web design world. I build
+              experiences that feel alive — not just pages that look good.
             </p>
             <p>
-              I help companies from all over the world with tailor-made solutions. With each
-              project I push my work to new horizons, always putting quality first.
+              I'm Kavish Parmar, an AI Agency Founder &amp; Web Developer based
+              in India. I specialise in crafting digital products that marry
+              strong visual design with robust engineering — and increasingly,
+              intelligent automation that gives businesses a real edge.
             </p>
           </div>
-          <div className="ip-about-col ip-about-stats">
-            <div className="ip-stat">
-              <span className="ip-stat-num">3+</span>
-              <span className="ip-stat-label">Years experience</span>
-            </div>
-            <div className="ip-stat">
-              <span className="ip-stat-num">20+</span>
-              <span className="ip-stat-label">Projects delivered</span>
-            </div>
-            <div className="ip-stat">
-              <span className="ip-stat-num">100%</span>
-              <span className="ip-stat-label">Client satisfaction</span>
-            </div>
+
+          {/* Placeholder — swap src for a real photo when ready */}
+          <div className="ap-bio-image">
+            <span className="ap-bio-image-placeholder">Photo coming soon</span>
           </div>
         </section>
 
-        {/* ── Pillars ── */}
-        <section className="ip-pillars section-container">
-          <p className="ip-kicker pe-kicker">What I do</p>
-          <div className="ip-pillar-grid">
-            <div className="ip-pillar pe-item">
-              <span className="ip-pillar-num">01</span>
-              <h3>Design</h3>
-              <p>Strong, user-friendly digital designs with a clear visual language and purpose.</p>
+        {/* ── Services ── */}
+        <section className="ap-services section-container">
+          <p className="ap-section-label">What I do</p>
+          <ul className="ap-service-list">
+            <li className="ap-service-item">
+              <span className="ap-service-num">01</span>
+              <div className="ap-service-body">
+                <h3>Design</h3>
+                <p>
+                  Strong, user-friendly digital designs with a clear visual
+                  language and deliberate purpose — built to convert and delight.
+                </p>
+              </div>
+            </li>
+            <li className="ap-service-item">
+              <span className="ap-service-num">02</span>
+              <div className="ap-service-body">
+                <h3>Development</h3>
+                <p>
+                  Scalable websites built from scratch with micro-animations,
+                  smooth transitions, and interaction that brings interfaces to life.
+                </p>
+              </div>
+            </li>
+            <li className="ap-service-item">
+              <span className="ap-service-num">03</span>
+              <div className="ap-service-body">
+                <h3>AI Solutions</h3>
+                <p>
+                  Intelligent automation and AI integrations — from chatbots to
+                  full workflow pipelines — that give businesses a competitive edge.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        {/* ── Approach (replaces Awards) ── */}
+        <section className="ap-approach section-container">
+          <p className="ap-section-label">My approach</p>
+          <div className="ap-approach-grid">
+            <div className="ap-approach-item">
+              <h3>Quality first</h3>
+              <p>
+                Every pixel, every line of code — crafted with intention.
+                No shortcuts, no compromise on the things that matter.
+              </p>
             </div>
-            <div className="ip-pillar pe-item">
-              <span className="ip-pillar-num">02</span>
-              <h3>Development</h3>
-              <p>Scalable websites built from scratch — focused on micro-animations and interaction.</p>
+            <div className="ap-approach-item">
+              <h3>Interaction-driven</h3>
+              <p>
+                Micro-animations and transitions are the soul of great digital
+                experience. I obsess over the details most people skip.
+              </p>
             </div>
-            <div className="ip-pillar pe-item">
-              <span className="ip-pillar-num">03</span>
-              <h3>AI Solutions</h3>
-              <p>Intelligent automation and AI integrations that give businesses a competitive edge.</p>
-            </div>
-            <div className="ip-pillar pe-item">
-              <span className="ip-pillar-num">04</span>
-              <h3>Full Package</h3>
-              <p>Concept to launch. Strategy, design, and development — all in one place.</p>
+            <div className="ap-approach-item">
+              <h3>Always learning</h3>
+              <p>
+                AI, new frameworks, emerging patterns — I stay on the cutting
+                edge so my clients never fall behind.
+              </p>
             </div>
           </div>
         </section>

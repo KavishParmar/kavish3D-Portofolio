@@ -1,17 +1,18 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import Navbar from "./Navbar";
-import SocialIcons from "./SocialIcons";
 import Footer from "./Footer";
 import { usePageEntry } from "./utils/pageEntryAnimation";
 import { destroyHomeScroll } from "./utils/homeMotionReset";
 import "./styles/PageEntry.css";
+import "./styles/LightPage.css";
 
 interface PageLayoutProps {
   children: ReactNode;
   pageKey: string;
+  lightBg?: boolean;
 }
 
-const PageLayout = ({ children }: PageLayoutProps) => {
+const PageLayout = ({ children, lightBg = false }: PageLayoutProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   usePageEntry(containerRef as React.RefObject<HTMLElement>);
 
@@ -25,9 +26,8 @@ const PageLayout = ({ children }: PageLayoutProps) => {
   }, []);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className={lightBg ? "page-light" : undefined}>
       <Navbar />
-      <SocialIcons />
       {children}
       <Footer />
     </div>

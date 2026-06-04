@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import BackToTop from "./components/BackToTop";
 const CharacterModel = lazy(() => import("./components/Character"));
 const MainContainer = lazy(() => import("./components/MainContainer"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -14,6 +15,7 @@ const App = () => {
     <BrowserRouter>
       <LoadingProvider>
         <NavigationTransitionProvider>
+          <BackToTop />
           <Suspense fallback={null}>
             <Routes>
               <Route

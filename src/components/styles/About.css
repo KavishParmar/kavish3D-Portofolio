@@ -71,23 +71,10 @@
   margin-top: 8px;
 }
 
-.about-top-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.about-top-row .para-highlight {
-  flex: 1;
-  min-width: 0;
-}
-
 .about-circle-btn-wrap {
-  flex-shrink: 0;
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .about-circle-btn {

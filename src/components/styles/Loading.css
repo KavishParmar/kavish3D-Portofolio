@@ -1,39 +1,31 @@
 .loading-screen {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Extra 20vh so the curved SVG bottom overhangs and stays below viewport until exit */
+  height: 120vh;
   z-index: 999999999;
-  display: grid;
-  place-items: center;
-  background: #111111;
   color: #ffffff;
+  pointer-events: all;
 }
 
-.loading-screen-exit {
-  pointer-events: none;
-  transform-origin: center top;
-  animation: curlExit 0.9s cubic-bezier(0.4, 0, 0.9, 0.6) forwards;
+/* SVG fills the full 120vh container; the curved path provides the background */
+.loading-screen-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-@keyframes curlExit {
-  0% {
-    transform: perspective(900px) translateY(0) rotateX(0deg);
-    opacity: 1;
-  }
-  30% {
-    transform: perspective(900px) translateY(-22%) rotateX(-12deg);
-    opacity: 1;
-  }
-  70% {
-    transform: perspective(900px) translateY(-72%) rotateX(-35deg);
-    opacity: 0.85;
-  }
-  100% {
-    transform: perspective(900px) translateY(-120%) rotateX(-55deg);
-    opacity: 0;
-  }
-}
-
+/* Text sits centred within the visible 100vh, above the SVG */
 .loading-screen-text {
+  position: absolute;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,6 +34,14 @@
   line-height: 1;
   letter-spacing: 0.02em;
   text-align: center;
+  white-space: nowrap;
+}
+
+/* Exit: slide the curtain upward — curved bottom sweeps across and exits */
+.loading-screen-exit {
+  pointer-events: none;
+  transform: translateY(-120%);
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .loading-screen-dot {

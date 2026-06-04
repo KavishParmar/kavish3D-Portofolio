@@ -44,7 +44,23 @@ const Loading = ({ percent: _percent }: { percent: number }) => {
   }, [greetingIndex, startExit]);
 
   return (
-    <div className={`loading-screen ${exiting ? "loading-screen-exit" : ""}`}>
+    <div className={`loading-screen${exiting ? " loading-screen-exit" : ""}`}>
+      {/*
+        Same SVG curtain as the page transition.
+        The path fills 0→100vh with a bezier that dips to 120vh at the center.
+        On exit the whole div slides to translateY(-120%), making the curved
+        bottom edge sweep upward across the viewport before disappearing.
+      */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 120"
+        preserveAspectRatio="none"
+        className="loading-screen-svg"
+        aria-hidden="true"
+      >
+        <path d="M0 0 L100 0 L100 100 Q50 120 0 100 Z" fill="#111111" />
+      </svg>
+
       <div className="loading-screen-text">
         <span className="loading-screen-dot">•</span>
         <span key={greetingIndex} className="loading-screen-word">{greetings[greetingIndex]}</span>

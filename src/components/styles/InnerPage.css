@@ -294,95 +294,138 @@
 }
 
 /* ─────────────────────────────────────────
-   CONTACT PAGE
+   CONTACT PAGE — DS STYLE
    ───────────────────────────────────────── */
 
-.ip-contact-grid {
+.ds-contact-page {
+  padding-bottom: 120px;
+}
+
+.ds-contact-header {
+  padding: 80px 0 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 0;
+}
+
+.ds-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accentColor);
+  margin: 0 0 28px;
+}
+
+.ds-contact-title {
+  font-size: clamp(52px, 7vw, 100px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -3px;
+  color: #eae5ec;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0 16px;
+}
+
+.ds-title-arrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accentColor);
+  font-size: 0.7em;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.ds-contact-body {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 80px;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 100px;
   align-items: start;
+  padding-top: 60px;
 }
 
-.ip-contact-form-col {
-  /* form lives here */
-}
-
-.ip-contact-form-col .contact-form-container {
-  margin-top: 0;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.ip-contact-info-col {
+/* Info sidebar */
+.ds-info-col {
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  padding-top: 10px;
+  gap: 0;
+  padding-top: 16px;
 }
 
-.ip-contact-info-block {
-  padding-bottom: 40px;
+.ds-info-block {
+  padding: 32px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.ip-contact-info-block:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.ds-info-block:first-child {
+  padding-top: 0;
 }
 
-.ip-contact-info-block h4 {
-  font-size: 11px;
+.ds-info-block:last-child {
+  border-bottom: none;
+}
+
+.ds-info-label {
+  display: block;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: #475569;
-  margin: 0 0 16px;
+  margin-bottom: 14px;
 }
 
-.ip-contact-info-block p {
-  font-size: 16px;
-  color: #94a3b8;
-  margin: 0;
-  line-height: 1.6;
-}
-
-.ip-contact-email {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
+.ds-info-email {
+  display: block;
+  font-size: clamp(14px, 1.3vw, 18px);
   color: #eae5ec;
   text-decoration: none;
+  word-break: break-all;
   transition: color 0.25s ease;
+  line-height: 1.5;
 }
 
-.ip-contact-email:hover {
+.ds-info-email:hover {
   color: var(--accentColor);
 }
 
-.ip-social-links {
+.ds-info-text {
+  font-size: 16px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.8;
+}
+
+.ds-social-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
 }
 
-.ip-social-link {
-  display: inline-flex;
+.ds-social-link {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 18px;
+  justify-content: space-between;
+  font-size: 16px;
   color: #94a3b8;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  padding-bottom: 12px;
-  transition: color 0.25s ease, border-color 0.25s ease;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color 0.25s ease;
 }
 
-.ip-social-link:hover {
-  color: #eae5ec;
-  border-color: rgba(255, 255, 255, 0.15);
+.ds-social-link:last-child {
+  border-bottom: none;
 }
+
+.ds-social-link:hover {
+  color: #eae5ec;
+}
+
+/* Legacy ip-contact-* kept for other references */
+.ip-contact-grid { display: none; }
 
 /* ═══════════════════════════════════════════
    RESPONSIVE
@@ -423,9 +466,38 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
+
+  .ds-contact-body {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .ds-info-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .ds-info-block {
+    width: 50%;
+    padding: 24px 16px 24px 0;
+  }
 }
 
 @media only screen and (max-width: 768px) {
+  .ds-info-col {
+    flex-direction: column;
+  }
+
+  .ds-info-block {
+    width: 100%;
+    padding: 24px 0;
+  }
+
+  .ds-contact-title {
+    letter-spacing: -1px;
+  }
+
   .ip-hero {
     padding: 60px 0 48px;
   }

@@ -1,57 +1,36 @@
 .page-transition {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Extra 20vh so the curved bottom of the SVG overhangs and is visible on exit */
+  height: 120vh;
   z-index: 9999999998;
-  display: grid;
-  place-items: center;
-  background: #111111;
-  color: #ffffff;
   pointer-events: none;
 }
 
-/* Initial / reset state — hidden below the viewport */
-.page-transition-below {
-  transform: translateY(100%);
+.page-transition svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-/* Slide in from below */
+/* Hidden — fully below the viewport */
+.page-transition-below {
+  transform: translateY(120%);
+  transition: none;
+}
+
+/* Curtain sweeps up from below to cover the full screen */
 .page-transition-active {
-  transform: translateY(0);
-  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0%);
+  transition: transform 0.72s cubic-bezier(0.76, 0, 0.24, 1);
   pointer-events: all;
 }
 
-/* Curl up on exit */
+/* Curtain continues upward — curved bottom sweeps across viewport and exits */
 .page-transition-exit {
+  transform: translateY(-120%);
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
   pointer-events: none;
-  transform-origin: center top;
-  animation: curlExit 0.9s cubic-bezier(0.4, 0, 0.9, 0.6) forwards;
-}
-
-@keyframes curlExit {
-  0% {
-    transform: perspective(900px) translateY(0) rotateX(0deg);
-    opacity: 1;
-  }
-  30% {
-    transform: perspective(900px) translateY(-22%) rotateX(-12deg);
-    opacity: 1;
-  }
-  70% {
-    transform: perspective(900px) translateY(-72%) rotateX(-35deg);
-    opacity: 0.85;
-  }
-  100% {
-    transform: perspective(900px) translateY(-120%) rotateX(-55deg);
-    opacity: 0;
-  }
-}
-
-.page-transition-label {
-  margin: 0;
-  font-size: clamp(34px, 6vw, 96px);
-  line-height: 1;
-  letter-spacing: 0.06em;
-  font-weight: 400;
-  text-transform: uppercase;
 }
