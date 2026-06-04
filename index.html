@@ -78,8 +78,18 @@
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({message: text})
       });
-      const data = await res.json();
-      const reply = data.response || data.message || data.reply || data.answer || Object.values(data)[0] || "Got it!";
+      const resText = await res.text();
+      let reply = resText.trim();
+
+      // Try parsing as JSON first
+      try {
+        const data = JSON.parse(resText);
+        reply = data.response || data.message || data.reply || data.answer || Object.values(data)[0] || resText;
+      } catch(e) {
+        // If not JSON, use the raw text response
+        reply = resText || "Got it!";
+      }
+
       document.getElementById(typingId).remove();
       msgs.innerHTML += `<div class="mkbot-msg bot">${reply}</div>`;
     } catch(e) {
