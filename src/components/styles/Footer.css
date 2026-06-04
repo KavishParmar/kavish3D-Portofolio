@@ -1,0 +1,109 @@
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 60px 24px 80px; /* bottom: 80px clears the fixed social icons */
+  background-color: var(--backgroundColor);
+  box-sizing: border-box;
+}
+
+.site-footer-inner {
+  width: var(--cWidth);
+  max-width: 1920px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-left: var(--sidebarW, 0px);
+}
+
+.site-footer-left .footer-logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #eae5ec;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.site-footer-left .footer-tagline {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.site-footer-right {
+  display: flex;
+  gap: 60px;
+}
+
+.footer-nav-group h6 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 0 0 14px;
+}
+
+.footer-nav-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-nav-group ul li a {
+  font-size: 15px;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer-nav-group ul li a:hover {
+  color: var(--accentColor);
+}
+
+.site-footer-bottom {
+  width: 100%;
+  max-width: 1920px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  padding-left: var(--sidebarW, 0px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-footer-bottom p {
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.site-footer-bottom .footer-made-with {
+  font-size: 13px;
+  color: #475569;
+}
+
+.site-footer-bottom .footer-made-with span {
+  color: var(--accentColor);
+}
+
+@media only screen and (max-width: 640px) {
+  .site-footer-right {
+    gap: 36px;
+  }
+
+  .site-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

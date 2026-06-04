@@ -22,6 +22,7 @@
   --backgroundColor: #0a0e17;
   --vh: 100vh;
   --vh: 100svh;
+  --sidebarW: 0px; /* social sidebar clearance, set per breakpoint */
 }
 
 h1,
@@ -103,35 +104,15 @@ body {
   flex-wrap: nowrap;
 }
 
-.techstack {
-  width: 100%;
-  position: relative;
-  overflow: clip;
-  height: var(--vh);
-  margin: auto;
-  margin-top: 50px;
-  margin-bottom: -100px;
-}
-
-.techstack h2 {
-  font-size: 80px;
-  text-align: center;
-  position: absolute;
-  width: 100%;
-  top: 120px;
-  left: 0;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
 @media screen and (min-width: 768px) {
   body {
     --cWidth: 94%;
   }
 }
 
-@media screen and (max-width: 900px) {
-  .techstack h2 {
-    font-size: 40px;
+@media screen and (min-width: 900px) {
+  body {
+    --sidebarW: 80px; /* ~social icons 50px + gap */
   }
 }
+

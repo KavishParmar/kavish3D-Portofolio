@@ -5,7 +5,7 @@ export function setCharTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
   camera: THREE.PerspectiveCamera
 ) {
-  let intensity: number = 0;
+  let intensity = 0;
   setInterval(() => {
     intensity = Math.random();
   }, 200);
@@ -36,31 +36,60 @@ export function setCharTimeline(
       invalidateOnRefresh: true,
     },
   });
-  let screenLight: any, monitor: any;
-  character?.children.forEach((object: any) => {
-    if (object.name === "Plane004") {
-      object.children.forEach((child: any) => {
-        child.material.transparent = true;
-        child.material.opacity = 0;
-        if (child.material.name === "Material.018") {
-          monitor = child;
-          child.material.color.set("#FFFFFF");
+  type MaterialNode = THREE.Object3D & {
+    material?: THREE.MeshStandardMaterial & {
+      transparent?: boolean;
+      opacity: number;
+      emissive?: THREE.Color;
+      color?: THREE.Color;
+      name?: string;
+    };
+    children: MaterialNode[];
+    position: THREE.Vector3;
+  };
+
+  let screenLight: MaterialNode | null = null;
+  let monitor: MaterialNode | null = null;
+  character?.children.forEach((object) => {
+    const typedObject = object as MaterialNode;
+    if (typedObject.name === "Plane004") {
+      typedObject.children.forEach((child) => {
+        const typedChild = child as MaterialNode;
+        if (typedChild.material) {
+          typedChild.material.transparent = true;
+          typedChild.material.opacity = 0;
+          if (typedChild.material.name === "Material.018") {
+            monitor = typedChild;
+            if (typedChild.material.color) typedChild.material.color.set("#FFFFFF");
+          }
         }
       });
     }
-    if (object.name === "screenlight") {
-      object.material.transparent = true;
-      object.material.opacity = 0;
-      object.material.emissive.set("#B0F5EA");
-      gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
-        emissiveIntensity: () => intensity * 8,
-        duration: () => Math.random() * 0.6,
-        delay: () => Math.random() * 0.1,
-      });
-      screenLight = object;
+    if (typedObject.name === "screenlight") {
+      if (typedObject.material) {
+        typedObject.material.transparent = true;
+        typedObject.material.opacity = 0;
+        if (typedObject.material.emissive)
+          typedObject.material.emissive.set("#B0F5EA");
+        gsap.timeline({ repeat: -1, repeatRefresh: true }).to(typedObject.material, {
+          emissiveIntensity: () => intensity * 8,
+          duration: () => Math.random() * 0.6,
+          delay: () => Math.random() * 0.1,
+        });
+      }
+      screenLight = typedObject;
     }
   });
-  let neckBone = character?.getObjectByName("spine005");
+  const neckBone = character?.getObjectByName("spine005");
+  const monitorMaterial = (monitor as unknown as
+    | { material?: THREE.MeshStandardMaterial }
+    | null)?.material;
+  const monitorPosition = (monitor as unknown as
+    | { position?: THREE.Vector3 }
+    | null)?.position;
+  const screenLightMaterial = (screenLight as unknown as
+    | { material?: THREE.MeshStandardMaterial }
+    | null)?.material;
   if (window.innerWidth > 1024) {
     if (character) {
       tl1
@@ -69,7 +98,7 @@ export function setCharTimeline(
         .fromTo(".character-model", { x: 0 }, { x: "-25%", duration: 1 }, 0)
         .to(".landing-container", { opacity: 0, duration: 0.4 }, 0)
         .to(".landing-container", { y: "40%", duration: 0.8 }, 0)
-        .fromTo(".about-me", { y: "-50%" }, { y: "0%" }, 0);
+        .fromTo(".about-me", { y: "-50%", opacity: 0 }, { y: "0%", opacity: 1 }, 0);
 
       tl2
         .to(
@@ -86,9 +115,9 @@ export function setCharTimeline(
           0
         )
         .to(character.rotation, { y: 0.92, x: 0.12, delay: 3, duration: 3 }, 0)
-        .to(neckBone!.rotation, { x: 0.6, delay: 2, duration: 3 }, 0)
-        .to(monitor.material, { opacity: 1, duration: 0.8, delay: 3.2 }, 0)
-        .to(screenLight.material, { opacity: 1, duration: 0.8, delay: 4.5 }, 0)
+        .to(neckBone ? neckBone.rotation : {}, { x: 0.6, delay: 2, duration: 3 }, 0)
+        .to(monitorMaterial ?? {}, { opacity: 1, duration: 0.8, delay: 3.2 }, 0)
+        .to(screenLightMaterial ?? {}, { opacity: 1, duration: 0.8, delay: 4.5 }, 0)
         .fromTo(
           ".what-box-in",
           { display: "none" },
@@ -96,7 +125,7 @@ export function setCharTimeline(
           0
         )
         .fromTo(
-          monitor.position,
+          monitorPosition ?? {},
           { y: -10, z: 2 },
           { y: 0, z: 0, delay: 1.5, duration: 3 },
           0
@@ -133,45 +162,70 @@ export function setCharTimeline(
 }
 
 export function setAllTimeline() {
+  const careerBoxes = gsap.utils.toArray<HTMLElement>(".career-info-box");
+  const totalBoxes = careerBoxes.length;
+
+  // Main timeline: grows the line as you scroll through the career section
   const careerTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: ".career-section",
       start: "top 30%",
-      end: "100% center",
-      scrub: true,
+      end: "bottom 60%",
+      scrub: 1,
       invalidateOnRefresh: true,
     },
   });
+
+  // Line grows from 0 to full height
   careerTimeline
     .fromTo(
       ".career-timeline",
-      { maxHeight: "10%" },
-      { maxHeight: "100%", duration: 0.5 },
+      { maxHeight: "0%" },
+      { maxHeight: "100%", duration: 1, ease: "none" },
       0
     )
-
     .fromTo(
       ".career-timeline",
       { opacity: 0 },
-      { opacity: 1, duration: 0.1 },
-      0
-    )
-    .fromTo(
-      ".career-info-box",
-      { opacity: 0 },
-      { opacity: 1, stagger: 0.1, duration: 0.5 },
-      0
-    )
-    .fromTo(
-      ".career-dot",
-      { animationIterationCount: "infinite" },
-      {
-        animationIterationCount: "1",
-        delay: 0.3,
-        duration: 0.1,
-      },
+      { opacity: 1, duration: 0.02 },
       0
     );
+
+  // Each card fades + slides in at staggered points along the scroll
+  careerBoxes.forEach((box, i) => {
+    const isRight = box.classList.contains("career-right");
+    const startPos = i / totalBoxes;      // when this card starts appearing
+    const revealDur = 0.28;               // how long the reveal takes (as fraction of total scroll)
+
+    careerTimeline.fromTo(
+      box,
+      {
+        opacity: 0,
+        x: isRight ? 280 : -280, // Slides in from moderate distance (prevents crossing center)
+        scale: 0.85,
+      },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        duration: revealDur,
+        ease: "power3.out", // Beautifully smooth glide-and-settle
+      },
+      startPos
+    );
+  });
+
+  // Dot pulses while scrolling, calms down at end
+  careerTimeline.fromTo(
+    ".career-dot",
+    { animationIterationCount: "infinite" },
+    {
+      animationIterationCount: "1",
+      delay: 0.3,
+      duration: 0.1,
+    },
+    0
+  );
 
   if (window.innerWidth > 1024) {
     careerTimeline.fromTo(

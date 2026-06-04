@@ -1,65 +1,24 @@
 import { useState, useCallback, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./styles/Work.css";
 import WorkImage from "./WorkImage";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
-
-const projects = [
-  {
-    title: "Kavish Parmar Portfolio",
-    category: "Personal Portfolio Website",
-    tools: "React, GSAP, Three.js, Vite, TypeScript",
-    image: "/images/placeholder.png",
-    link: "https://kavishparmar.vercel.app/",
-  },
-  {
-    title: "Green Valley Coaching",
-    category: "Education Institute Website",
-    tools: "React, Responsive Design, SEO, Vite",
-    image: "/images/placeholder.png",
-    link: "https://greenvalleycoachinginstitute.vercel.app/",
-  },
-  {
-    title: "Yoga with Harshwardhan",
-    category: "Yoga & Wellness Landing Page",
-    tools: "HTML, CSS, JavaScript, Google Forms Integration",
-    image: "/images/placeholder.png",
-    link: "https://kavishparmar.github.io/yogawithharshwardhan/",
-  },
-  {
-    title: "Kiran Copper House",
-    category: "Mobile Shop — Rajgarh, Dhar",
-    tools: "React, Vite, SEO, Structured Data",
-    image: "/images/placeholder.png",
-    link: "https://kirancopperhouse.vercel.app/",
-  },
-  {
-    title: "Kiran Copper House v2",
-    category: "Mobile Shop — Redesigned Version",
-    tools: "React, Vite, UX Revamp, Google Analytics",
-    image: "/images/placeholder.png",
-    link: "https://kirancopperhouse2.vercel.app/",
-  },
-  {
-    title: "Shubham Showroom",
-    category: "Business Showroom Website",
-    tools: "React, Vite, Responsive UI",
-    image: "/images/placeholder.png",
-    link: "https://shubhamshowroom.vercel.app/",
-  },
-];
+import { projects } from "../data/projects";
+import { useNavigationTransition } from "../context/NavigationTransition";
 
 const Work = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-
   const [isPaused, setIsPaused] = useState(false);
+  const { startTransition } = useNavigationTransition();
 
   const goToSlide = useCallback(
     (index: number) => {
       if (isAnimating) return;
       setIsAnimating(true);
-      setCurrentIndex(index);
-      setTimeout(() => setIsAnimating(false), 500);
+      const nextIndex = (index + projects.length) % projects.length;
+      setCurrentIndex(nextIndex);
+      window.setTimeout(() => setIsAnimating(false), 500);
     },
     [isAnimating]
   );
@@ -78,26 +37,38 @@ const Work = () => {
 
   useEffect(() => {
     if (isPaused) return;
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       goToNext();
-    }, 6000); // Scroll every 6 seconds
+    }, 6000);
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [goToNext, isPaused]);
 
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
-        <h2>
-          My <span>Work</span>
-        </h2>
+        <div className="work-heading-row">
+          <h2>
+            My <span>Work</span>
+          </h2>
+          <Link
+            to="/work"
+            className="work-more-btn"
+            onClick={(event) => {
+              event.preventDefault();
+              startTransition("/work", "WORK");
+            }}
+            data-cursor="disable"
+          >
+            More Work <span>+</span>
+          </Link>
+        </div>
 
-        <div 
+        <div
           className="carousel-wrapper"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Navigation Arrows */}
           <button
             className="carousel-arrow carousel-arrow-left"
             onClick={goToPrev}
@@ -115,7 +86,6 @@ const Work = () => {
             <MdArrowForward />
           </button>
 
-          {/* Slides */}
           <div className="carousel-track-container">
             <div
               className="carousel-track"
@@ -132,9 +102,7 @@ const Work = () => {
                       </div>
                       <div className="carousel-details">
                         <h4>{project.title}</h4>
-                        <p className="carousel-category">
-                          {project.category}
-                        </p>
+                        <p className="carousel-category">{project.category}</p>
                         <div className="carousel-tools">
                           <span className="tools-label">Tools & Features</span>
                           <p>{project.tools}</p>
@@ -154,13 +122,13 @@ const Work = () => {
             </div>
           </div>
 
-          {/* Dot Indicators */}
           <div className="carousel-dots">
             {projects.map((_, index) => (
               <button
                 key={index}
-                className={`carousel-dot ${index === currentIndex ? "carousel-dot-active" : ""
-                  }`}
+                className={`carousel-dot ${
+                  index === currentIndex ? "carousel-dot-active" : ""
+                }`}
                 onClick={() => goToSlide(index)}
                 aria-label={`Go to project ${index + 1}`}
                 data-cursor="disable"
@@ -174,3 +142,4 @@ const Work = () => {
 };
 
 export default Work;
+

@@ -26,11 +26,12 @@ const WorkImage = (props: Props) => {
       <a
         className="work-image-in"
         href={props.link}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={() => setIsVideo(false)}
-        target="_blank"
-        data-cursor={"disable"}
-      >
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setIsVideo(false)}
+      target="_blank"
+      rel="noreferrer"
+      data-cursor={"disable"}
+    >
         {props.link && (
           <div className="work-link">
             <MdArrowOutward />

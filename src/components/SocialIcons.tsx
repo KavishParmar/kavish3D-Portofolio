@@ -9,16 +9,16 @@ import { useEffect } from "react";
 const SocialIcons = () => {
   useEffect(() => {
     const social = document.getElementById("social") as HTMLElement;
+    const handlers: Array<(e: MouseEvent) => void> = [];
 
     social.querySelectorAll("span").forEach((item) => {
       const elem = item as HTMLElement;
       const link = elem.querySelector("a") as HTMLElement;
 
-      const rect = elem.getBoundingClientRect();
-      let mouseX = rect.width / 2;
-      let mouseY = rect.height / 2;
-      let currentX = 0;
-      let currentY = 0;
+      let mouseX = 25;
+      let mouseY = 25;
+      let currentX = 25;
+      let currentY = 25;
 
       const updatePosition = () => {
         currentX += (mouseX - currentX) * 0.1;
@@ -31,10 +31,11 @@ const SocialIcons = () => {
       };
 
       const onMouseMove = (e: MouseEvent) => {
+        const rect = elem.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        if (x < 40 && x > 10 && y < 40 && y > 5) {
+        if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
           mouseX = x;
           mouseY = y;
         } else {
@@ -44,13 +45,16 @@ const SocialIcons = () => {
       };
 
       document.addEventListener("mousemove", onMouseMove);
+      handlers.push(onMouseMove);
 
       updatePosition();
-
-      return () => {
-        elem.removeEventListener("mousemove", onMouseMove);
-      };
     });
+
+    return () => {
+      handlers.forEach((handler) => {
+        document.removeEventListener("mousemove", handler);
+      });
+    };
   }, []);
 
   return (

@@ -1,8 +1,8 @@
-import { lazy, PropsWithChildren, Suspense, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import About from "./About";
 import Career from "./Career";
 import Contact from "./Contact";
-import Cursor from "./Cursor";
+import Footer from "./Footer";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
 import SocialIcons from "./SocialIcons";
@@ -10,7 +10,7 @@ import WhatIDo from "./WhatIDo";
 import Work from "./Work";
 import setSplitText from "./utils/splitText";
 
-const TechStack = lazy(() => import("./TechStack"));
+import ErrorBoundary from "./ErrorBoundary";
 
 const MainContainer = ({ children }: PropsWithChildren) => {
   const [isDesktopView, setIsDesktopView] = useState<boolean>(
@@ -31,24 +31,25 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
   return (
     <div className="container-main">
-      <Cursor />
       <Navbar />
       <SocialIcons />
-      {isDesktopView && children}
+      <ErrorBoundary fallback={null}>
+        {isDesktopView && children}
+      </ErrorBoundary>
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <div className="container-main">
-            <Landing>{!isDesktopView && children}</Landing>
+            <Landing>
+              <ErrorBoundary fallback={null}>
+                {!isDesktopView && children}
+              </ErrorBoundary>
+            </Landing>
             <About />
             <WhatIDo />
             <Career />
             <Work />
-            {isDesktopView && (
-              <Suspense fallback={<div>Loading....</div>}>
-                <TechStack />
-              </Suspense>
-            )}
             <Contact />
+            <Footer />
           </div>
         </div>
       </div>

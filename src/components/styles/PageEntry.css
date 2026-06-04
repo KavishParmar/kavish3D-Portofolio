@@ -1,0 +1,14 @@
+/* Initial hidden states for page entry elements — GSAP drives the actual animation */
+
+.pe-kicker,
+.pe-title,
+.pe-body,
+.pe-card,
+.pe-item {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.pe-title {
+  overflow: hidden;
+}

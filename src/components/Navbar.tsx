@@ -1,16 +1,102 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import "./styles/Navbar.css";
+import { useNavigationTransition } from "../context/NavigationTransition";
+import { getSmoother, setSmoother } from "./utils/scrollSmoother";
+import { useLoading } from "../context/LoadingProvider";
+import { destroyHomeScroll, resetHomeMotionState } from "./utils/homeMotionReset";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-export let smoother: ScrollSmoother;
+
+const socials = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/kavishparmar/" },
+  { label: "GitHub", href: "https://github.com/kavishparmar" },
+  { label: "Instagram", href: "https://www.instagram.com/kavishparmar_/" },
+  { label: "Twitter", href: "https://x.com/kavishparmar_" },
+];
+
+// Magnetic hover — attaches to a button element
+function useMagnetic(strength = 0.35) {
+  const ref = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * strength;
+      const dy = (e.clientY - cy) * strength;
+      gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: "power2.out" });
+    };
+
+    const onLeave = () => {
+      gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1,0.4)" });
+    };
+
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, [strength]);
+
+  return ref;
+}
+
+// Top-bar nav link with dot indicator + magnetic
+function TopNavBtn({ label, onClick }: { label: string; onClick: () => void }) {
+  const ref = useMagnetic(0.3);
+  return (
+    <button ref={ref} type="button" className="top-nav-link" onClick={onClick}>
+      {label}
+      <span className="nav-dot" />
+    </button>
+  );
+}
+
+// Sidebar nav link with dot indicator + magnetic
+function SideNavBtn({
+  label,
+  onClick,
+  style,
+}: {
+  label: string;
+  onClick: () => void;
+  style?: React.CSSProperties;
+}) {
+  const ref = useMagnetic(0.18);
+  return (
+    <button ref={ref} type="button" className="nav-link" style={style} onClick={onClick}>
+      <span className="side-dot" />
+      {label}
+    </button>
+  );
+}
 
 const Navbar = () => {
+  const location = useLocation();
+  const { startTransition } = useNavigationTransition();
+  const { isLoading } = useLoading();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(location.pathname !== "/");
+  const [logoHovered, setLogoHovered] = useState(false);
+
+  const isHomePage = useMemo(() => location.pathname === "/", [location.pathname]);
+
   useEffect(() => {
-    smoother = ScrollSmoother.create({
+    const wrapper = document.querySelector("#smooth-wrapper");
+    const content = document.querySelector("#smooth-content");
+
+    if (!wrapper || !content || !isHomePage) return;
+
+    const createdSmoother = ScrollSmoother.create({
       wrapper: "#smooth-wrapper",
       content: "#smooth-content",
       smooth: 1.7,
@@ -20,58 +106,159 @@ const Navbar = () => {
       ignoreMobileResize: true,
     });
 
-    smoother.scrollTop(0);
-    smoother.paused(true);
+    document.body.style.overflowY = "auto";
+    setSmoother(createdSmoother);
+    resetHomeMotionState();
+    createdSmoother.scrollTop(0);
+    window.scrollTo(0, 0);
+    createdSmoother.paused(isLoading);
 
-    let links = document.querySelectorAll(".header ul a");
-    links.forEach((elem) => {
-      let element = elem as HTMLAnchorElement;
-      element.addEventListener("click", (e) => {
-        if (window.innerWidth > 1024) {
-          e.preventDefault();
-          let elem = e.currentTarget as HTMLAnchorElement;
-          let section = elem.getAttribute("data-href");
-          smoother.scrollTo(section, true, "top top");
-        }
-      });
-    });
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       ScrollSmoother.refresh(true);
+      setScrolled(window.scrollY > 80);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.body.style.overflowY = "";
+      destroyHomeScroll();
+    };
+  }, [isHomePage]);
+
+  useEffect(() => {
+    if (!isHomePage || isLoading) return;
+    const rafId = requestAnimationFrame(() => {
+      getSmoother()?.paused(false);
+      getSmoother()?.scrollTop(0);
+      window.scrollTo(0, 0);
+      ScrollTrigger.refresh(true);
     });
-  }, []);
+    return () => cancelAnimationFrame(rafId);
+  }, [isHomePage, isLoading]);
+
+  useEffect(() => {
+    if (!isHomePage) {
+      setScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      const past = window.scrollY > 80;
+      setScrolled(past);
+      if (!past) setIsMenuOpen(false);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
+
+  useEffect(() => {
+    if (isHomePage) {
+      getSmoother()?.paused(isMenuOpen);
+    } else {
+      document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    }
+    return () => {
+      if (!isHomePage) document.body.style.overflow = "";
+    };
+  }, [isMenuOpen, isHomePage]);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const goHome = () => {
+    closeMenu();
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      startTransition("/", "HOME");
+    }
+  };
+
+  const handleNav = (page: string) => {
+    closeMenu();
+    setTimeout(() => {
+      if (page === "Work") startTransition("/work", "WORK");
+      else if (page === "About") startTransition("/about", "ABOUT");
+      else if (page === "Contact") startTransition("/contact", "CONTACT");
+    }, 300);
+  };
+
   return (
     <>
-      <div className="header">
-        <a href="/#" className="navbar-title" data-cursor="disable">
-          KP
-        </a>
-        <a
-          href="https://www.linkedin.com/in/kavishparmar/"
-          className="navbar-connect"
-          data-cursor="disable"
-          target="_blank"
-          rel="noreferrer"
+      {/* ── Top navbar (visible before scroll) ── */}
+      <header className={`top-navbar${scrolled ? " hidden" : ""}`}>
+        <button
+          type="button"
+          className="top-navbar-logo"
+          onClick={goHome}
+          onMouseEnter={() => setLogoHovered(true)}
+          onMouseLeave={() => setLogoHovered(false)}
         >
-          linkedin.com/in/kavishparmar
-        </a>
-        <ul>
-          <li>
-            <a data-href="#about" href="#about">
-              <HoverLinks text="ABOUT" />
+          <span className={`logo-default${logoHovered ? " out" : ""}`}>© Code by Kavish</span>
+          <span className={`logo-hover${logoHovered ? " in" : ""}`}>Kavish Parmar</span>
+        </button>
+
+        <nav className="top-navbar-links">
+          <TopNavBtn label="Work" onClick={() => handleNav("Work")} />
+          <TopNavBtn label="About" onClick={() => handleNav("About")} />
+          <TopNavBtn label="Contact" onClick={() => handleNav("Contact")} />
+        </nav>
+      </header>
+
+      {/* ── Hamburger button (visible after scroll) ── */}
+      <button
+        type="button"
+        className={`btn-hamburger${scrolled ? " visible" : ""}${isMenuOpen ? " menu-open" : ""}`}
+        onClick={() => setIsMenuOpen((v) => !v)}
+        aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}
+        aria-expanded={isMenuOpen}
+      >
+        <span className="bar" />
+        <span className="bar" />
+        <span className="bar" />
+      </button>
+
+      {/* ── Overlay ── */}
+      <div
+        className={`nav-overlay${isMenuOpen ? " active" : ""}`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      {/* ── Side drawer ── */}
+      <nav className={`side-nav${isMenuOpen ? " active" : ""}`} aria-hidden={!isMenuOpen}>
+        <div className="nav-section">
+          <h5 className="nav-heading">Navigation</h5>
+          {["Home", "Work", "About", "Contact"].map((item, i) => (
+            <SideNavBtn
+              key={item}
+              label={item}
+              style={{ transitionDelay: isMenuOpen ? `${0.05 + i * 0.06}s` : "0s" }}
+              onClick={() => (item === "Home" ? goHome() : handleNav(item))}
+            />
+          ))}
+        </div>
+
+        <div className="nav-section nav-socials">
+          <h5 className="nav-heading">Socials</h5>
+          {socials.map((s, i) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-social-link"
+              style={{ transitionDelay: isMenuOpen ? `${0.25 + i * 0.05}s` : "0s" }}
+            >
+              {s.label}
             </a>
-          </li>
-          <li>
-            <a data-href="#work" href="#work">
-              <HoverLinks text="WORK" />
-            </a>
-          </li>
-          <li>
-            <a data-href="#contact" href="#contact">
-              <HoverLinks text="CONTACT" />
-            </a>
-          </li>
-        </ul>
-      </div>
+          ))}
+        </div>
+      </nav>
 
       <div className="landing-circle1"></div>
       <div className="landing-circle2"></div>

@@ -10,7 +10,86 @@
 
 <body>
   <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+<script type="module" src="/src/main.tsx"> </script>
+
+
+
+<!-- Website Chatbot - Powered by Make.com -->
+<div id="mkbot-widget">
+  <button id="mkbot-toggle" onclick="mkbotToggle()">💬 Chat with us</button>
+  <div id="mkbot-box">
+    <div id="mkbot-header">
+      <span>🤖 AI Assistant</span>
+      <button onclick="mkbotToggle()">✕</button>
+    </div>
+    <div id="mkbot-messages">
+      <div class="mkbot-msg bot">Hi! How can I help you today?</div>
+    </div>
+    <div id="mkbot-footer">
+      <input id="mkbot-input" type="text" placeholder="Type your message..." onkeydown="if(event.key==='Enter')mkbotSend()" />
+      <button onclick="mkbotSend()">➤</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #mkbot-widget{position:fixed;bottom:28px;right:28px;z-index:99999;font-family:sans-serif}
+  #mkbot-toggle{background:#c73a63;color:#fff;border:none;border-radius:50px;padding:14px 22px;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(199,58,99,.4);transition:.2s}
+  #mkbot-toggle:hover{background:#a8284f}
+  #mkbot-box{display:none;flex-direction:column;width:350px;height:480px;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;margin-bottom:12px}
+  #mkbot-header{background:#c73a63;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px}
+  #mkbot-header button{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+  #mkbot-messages{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#f7f7f8}
+  .mkbot-msg{max-width:82%;padding:10px 15px;border-radius:14px;font-size:14px;line-height:1.5}
+  .mkbot-msg.user{background:#c73a63;color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .mkbot-msg.bot{background:#fff;color:#222;align-self:flex-start;border:1px solid #e8e8e8;border-bottom-left-radius:3px}
+  .mkbot-msg.typing{color:#999;font-style:italic}
+  #mkbot-footer{display:flex;padding:12px;border-top:1px solid #eee;gap:8px;background:#fff}
+  #mkbot-input{flex:1;border:1px solid #ddd;border-radius:10px;padding:9px 13px;font-size:14px;outline:none}
+  #mkbot-input:focus{border-color:#c73a63}
+  #mkbot-footer button{background:#c73a63;color:#fff;border:none;border-radius:10px;padding:9px 15px;cursor:pointer;font-size:16px}
+</style>
+
+<script>
+  const MKBOT_URL = "https://hook.eu2.make.com/joehx828xtwc7idogl25hkewb9lg8dox";
+
+  function mkbotToggle() {
+    const box = document.getElementById("mkbot-box");
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+  }
+
+  async function mkbotSend() {
+    const input = document.getElementById("mkbot-input");
+    const msgs = document.getElementById("mkbot-messages");
+    const text = input.value.trim();
+    if (!text) return;
+
+    msgs.innerHTML += `<div class="mkbot-msg user">${text}</div>`;
+    input.value = "";
+    msgs.scrollTop = msgs.scrollHeight;
+
+    const typingId = "t" + Date.now();
+    msgs.innerHTML += `<div class="mkbot-msg bot typing" id="${typingId}">Typing...</div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+      const res = await fetch(MKBOT_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: text})
+      });
+      const data = await res.json();
+      const reply = data.response || data.message || data.reply || data.answer || Object.values(data)[0] || "Got it!";
+      document.getElementById(typingId).remove();
+      msgs.innerHTML += `<div class="mkbot-msg bot">${reply}</div>`;
+    } catch(e) {
+      document.getElementById(typingId).remove();
+      msgs.innerHTML += `<div class="mkbot-msg bot">Sorry, I'm unavailable right now. Please try again.</div>`;
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+</script>
+
 </body>
 
 </html>
