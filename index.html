@@ -34,11 +34,11 @@
 
 <style>
   #mkbot-widget{position:fixed;bottom:28px;right:28px;z-index:99999;font-family:sans-serif}
-  #mkbot-toggle{background:#c73a63;color:#fff;border:none;border-radius:50px;padding:14px 22px;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(199,58,99,.4);transition:.2s}
+  #mkbot-toggle{background:#c73a63;color:#fff;border:none;border-radius:50px;padding:14px 22px;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(199,58,99,.4);transition:.2s;position:relative;will-change:transform}
   #mkbot-toggle:hover{background:#a8284f}
   #mkbot-box{display:none;flex-direction:column;width:350px;height:480px;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;margin-bottom:12px}
   #mkbot-header{background:#c73a63;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px}
-  #mkbot-header button{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+  #mkbot-header button{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;position:relative;will-change:transform}
   #mkbot-messages{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#f7f7f8}
   .mkbot-msg{max-width:82%;padding:10px 15px;border-radius:14px;font-size:14px;line-height:1.5}
   .mkbot-msg.user{background:#c73a63;color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
@@ -47,11 +47,33 @@
   #mkbot-footer{display:flex;padding:12px;border-top:1px solid #eee;gap:8px;background:#fff}
   #mkbot-input{flex:1;border:1px solid #ddd;border-radius:10px;padding:9px 13px;font-size:14px;outline:none}
   #mkbot-input:focus{border-color:#c73a63}
-  #mkbot-footer button{background:#c73a63;color:#fff;border:none;border-radius:10px;padding:9px 15px;cursor:pointer;font-size:16px}
+  #mkbot-footer button{background:#c73a63;color:#fff;border:none;border-radius:10px;padding:9px 15px;cursor:pointer;font-size:16px;position:relative;will-change:transform}
 </style>
 
 <script>
   const MKBOT_URL = "https://hook.eu2.make.com/joehx828xtwc7idogl25hkewb9lg8dox";
+
+  function applyMagneticHover(el, strength = 0.3) {
+    if (!el) return;
+
+    function onMove(e) {
+      const rect = el.getBoundingClientRect();
+      const dx = (e.clientX - (rect.left + rect.width / 2)) * strength;
+      const dy = (e.clientY - (rect.top + rect.height / 2)) * strength;
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+    }
+
+    function onLeave() {
+      el.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      el.style.transform = 'translate(0, 0)';
+      setTimeout(() => {
+        el.style.transition = '';
+      }, 550);
+    }
+
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+  }
 
   function mkbotToggle() {
     const box = document.getElementById("mkbot-box");
@@ -98,6 +120,13 @@
     }
     msgs.scrollTop = msgs.scrollHeight;
   }
+
+  // Initialize magnetic hover for chatbot buttons
+  document.addEventListener('DOMContentLoaded', () => {
+    applyMagneticHover(document.getElementById('mkbot-toggle'), 0.3);
+    applyMagneticHover(document.getElementById('mkbot-header').querySelector('button'), 0.25);
+    applyMagneticHover(document.getElementById('mkbot-footer').querySelector('button'), 0.25);
+  });
 </script>
 
 </body>

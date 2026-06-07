@@ -85,7 +85,7 @@
   height: 140px;
   border-radius: 50%;
   border: 1.5px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
   color: #eae5ec;
   font-size: 13px;
   font-weight: 600;
@@ -107,6 +107,7 @@
   background: var(--accentColor);
   transform: scale(0);
   transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1);
+  z-index: 0;
 }
 
 .about-circle-btn:hover {

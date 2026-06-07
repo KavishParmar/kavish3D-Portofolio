@@ -93,7 +93,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 8px;
   /* magnetic — gsap handles transform, just ensure no layout shift */
   will-change: transform;
 }
@@ -101,12 +101,9 @@
 
 /* active dot under top-nav links */
 .top-nav-link .top-active-dot {
-  position: absolute;
-  bottom: 3px;
-  left: 50%;
-  translate: -50% 0;
-  width: 4px;
-  height: 4px;
+  position: relative;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #eae5ec;
   opacity: 0;

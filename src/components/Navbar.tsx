@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { gsap } from "gsap";
@@ -89,6 +89,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(window.scrollY > 80);
   const [logoHovered, setLogoHovered] = useState(false);
+  const hamburgerRef = useMagnetic(0.3);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const isHomePage = useMemo(() => location.pathname === "/", [location.pathname]);
 
@@ -164,6 +166,48 @@ const Navbar = () => {
     };
   }, [isMenuOpen, isHomePage]);
 
+  const attachMagneticHover = useCallback((el: HTMLElement, strength: number) => {
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const dx = (e.clientX - (rect.left + rect.width / 2)) * strength;
+      const dy = (e.clientY - (rect.top + rect.height / 2)) * strength;
+      gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: "power2.out" });
+    };
+
+    const onLeave = () => {
+      gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1,0.4)" });
+    };
+
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMenuOpen && closeButtonRef.current) {
+      return attachMagneticHover(closeButtonRef.current, 0.25);
+    }
+  }, [isMenuOpen, attachMagneticHover]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      const socialLinks = document.querySelectorAll(".nav-social-link");
+      const cleanups: (() => void)[] = [];
+
+      socialLinks.forEach((link) => {
+        const cleanup = attachMagneticHover(link as HTMLElement, 0.2);
+        cleanups.push(cleanup);
+      });
+
+      return () => {
+        cleanups.forEach(cleanup => cleanup());
+      };
+    }
+  }, [isMenuOpen, attachMagneticHover]);
+
   const closeMenu = () => setIsMenuOpen(false);
 
   const goHome = (e?: React.MouseEvent) => {
@@ -212,6 +256,7 @@ const Navbar = () => {
 
       {/* ── Hamburger button (visible after scroll) ── */}
       <button
+        ref={hamburgerRef}
         type="button"
         className={`btn-hamburger${scrolled ? " visible" : ""}${isMenuOpen ? " menu-open" : ""}`}
         onClick={() => setIsMenuOpen((v) => !v)}
@@ -232,6 +277,16 @@ const Navbar = () => {
 
       {/* ── Side drawer ── */}
       <nav className={`side-nav${isMenuOpen ? " active" : ""}`} aria-hidden={!isMenuOpen}>
+        <button
+          ref={closeButtonRef}
+          type="button"
+          className="side-nav-close"
+          onClick={closeMenu}
+          aria-label="Close navigation"
+          style={{ position: "absolute", top: "20px", right: "28px", zIndex: 10, background: "none", border: "none", color: "#eae5ec", fontSize: "28px", cursor: "pointer", willChange: "transform", padding: "0", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          ✕
+        </button>
         <div className="nav-section">
           <h5 className="nav-heading">Navigation</h5>
           {["Home", "Work", "About", "Contact"].map((item, i) => {

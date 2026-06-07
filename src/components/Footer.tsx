@@ -7,6 +7,8 @@ const Footer = () => {
   const { startTransition } = useNavigationTransition();
   const [time, setTime] = useState("");
   const getInTouchRef = useMagneticHover<HTMLButtonElement>(0.28);
+  const emailPillRef = useMagneticHover<HTMLAnchorElement>(0.25);
+  const phonePillRef = useMagneticHover<HTMLAnchorElement>(0.25);
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,7 +30,7 @@ const Footer = () => {
     <footer className="site-footer">
       <div className="footer-inner">
 
-        {/* ── Heading ── */}
+        {/* ── Heading with Get in touch button ── */}
         <div className="footer-hero">
           <img
             src="/images/kavish.png"
@@ -40,9 +42,21 @@ const Footer = () => {
           </h2>
         </div>
 
-        {/* ── Divider + Get in touch ── */}
+        {/* ── Divider ── */}
         <div className="footer-divider-row">
           <div className="footer-divider-line" />
+        </div>
+
+        {/* ── Contact pills with Get in touch button ── */}
+        <div className="footer-contact-row">
+          <div className="footer-pills">
+            <a ref={emailPillRef} href="mailto:kavishparmar2@gmail.com" className="footer-pill">
+              kavishparmar2@gmail.com
+            </a>
+            <a ref={phonePillRef} href="tel:+919302492158" className="footer-pill">
+              +91 9302492158
+            </a>
+          </div>
           <button
             ref={getInTouchRef}
             type="button"
@@ -51,18 +65,6 @@ const Footer = () => {
           >
             Get in touch
           </button>
-        </div>
-
-        {/* ── Contact pills ── */}
-        <div className="footer-contact-row">
-          <div className="footer-pills">
-            <a href="mailto:kavishparmar2@gmail.com" className="footer-pill">
-              kavishparmar2@gmail.com
-            </a>
-            <a href="tel:+919302492158" className="footer-pill">
-              +91 9302492158
-            </a>
-          </div>
         </div>
 
         {/* ── Bottom info bar ── */}
